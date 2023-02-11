@@ -1,0 +1,298 @@
+const quizArray = [
+    {
+      
+      quizName:'',
+      questions: [
+        {
+          questionName:'',
+          options:[],
+          correctAnswerIndex: 1
+        },
+        {
+          questionName:'',
+          options:[],
+          correctAnswerIndex: 1
+        }
+      ]
+    },
+    {
+      quizName:'',
+      questions: [
+        {
+          questionName:'',
+          options:[],
+          correctAnswerIndex: 1
+        },
+        {
+          questionName:'',
+          options:[],
+          correctAnswerIndex: 1
+        }
+      ]
+    }
+]
+----------------------------------------------------
+import React, { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+//----------css------------------------------------>
+import "../StaffQuizForms/StaffQuizForm.css";
+//----------------JSON-Template-------------------->
+const quizArrayf = () => ({
+  quizName: "",
+  questions: [question()],
+});
+const question = () => ({
+  questionName: "",
+  options: [options()],
+  correctAnswerIndex: -1,
+});
+const options = () => ({
+  options: "",
+});
+// -----------------------------------------------------------
+
+const StaffQuizForm = () => {
+  const [quizArray, setQuizArray] = useState([quizArrayf()]);
+console.log(quizArray);
+  // ----------------------------------------------
+  // useEffect(() => {
+  //   const quizArrayUse = JSON.parse(localStorage.getItem("quizArray"));
+  //   if (quizArrayUse) {
+  //     setQuizArray(quizArrayUse);
+  //   }
+  // }, []);
+  // -------------------------------
+  //dynamic input filed add-----------------------
+  const handleAddQuestion = (quizArrayIndex) => {
+    const QuizAdd = [...quizArray];
+    QuizAdd[quizArrayIndex].questions = [
+      ...QuizAdd[quizArrayIndex].questions,
+      question(),
+    ];
+    setQuizArray(QuizAdd);
+    console.log(QuizAdd);
+  };
+  //dynamic options filed add----------------------
+  const handleAddOptions = (questionIndex, quizArrayIndex) => {
+    const QuizAddOpt = [...quizArray];
+    QuizAddOpt[quizArrayIndex].questions[questionIndex].options = [
+      ...QuizAddOpt[quizArrayIndex].questions[questionIndex].options,
+      options(),
+    ];
+    setQuizArray(QuizAddOpt);
+    console.log(QuizAddOpt[quizArrayIndex].questions[questionIndex].options);
+  };
+  //--------------------option delete-------------------->
+  const optionsDelete = (quizArrayIndex, questionIndex, optionIndex) => {
+    // console.log(quizArrayIndex,questionIndex, optionIndex);
+    let QuizAddOptDel = [...quizArray];
+    QuizAddOptDel[quizArrayIndex].questions[questionIndex].options =
+      QuizAddOptDel[quizArrayIndex].questions[questionIndex].options.filter(
+        (quizOptionRemove, quizOptRemoveIndex) => {
+          return optionIndex !== quizOptRemoveIndex;
+        }
+      );
+    setQuizArray(QuizAddOptDel);
+    // console.log(QuizAddOptDel[quizArrayIndex].questions[questionIndex].options);
+  };
+  //--------------------Nmae-on-change---------------------------------
+  const handlechangeName = (onChangeValue, quizArrayIndex) => {
+    const quizNamechange = [...quizArray];
+    quizNamechange[quizArrayIndex].quizName = onChangeValue.target.value;
+    setQuizArray(quizNamechange);
+    // console.log(onChangeValue.target.value);
+    console.log(quizNamechange);
+  };
+  //-----------------------questions-on-change-------------------------
+  const handlechangeQus = (onChangeValue, quizArrayIndex, questionIndex) => {
+    const quizQuschange = [...quizArray];
+    quizQuschange[quizArrayIndex].questions[questionIndex].questionName =
+      onChangeValue.target.value;
+    // setQuizArray(quizQuschange)
+    console.log(quizQuschange);
+  };
+  //-----------------------options-on-change-------------------------
+  const handlechangeOptions = (
+    onChangeValue,
+    quizArrayIndex,
+    questionIndex,
+    optionIndex
+  ) => {
+    const quizOptionchange = [...quizArray];
+    quizOptionchange[quizArrayIndex].questions[questionIndex].options[
+      optionIndex
+    ] = onChangeValue.target.value;
+    // setQuizArray(quizQuschange)
+    console.log(quizOptionchange);
+  };
+  const handelSubmits = (e) => {
+    e.preventDefault();
+    localStorage.setItem("quizArray", JSON.stringify(quizArray));
+  };
+
+  // custom css------------------------------------------->
+  const CssTextField = styled(TextField)({
+    "& label.Mui-focused": {
+      color: "#6657CA",
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#6657CA",
+        height: "50px",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#6657CA",
+      },
+    },
+  });
+  // custom css------------------------------------------->
+  const CssTextFields = styled(TextField)({
+    "& label.Mui-focused": {
+      color: "#6657CA",
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#6657CA",
+        height: "80px",
+        width: "900px",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#6657CA",
+      },
+    },
+  });
+  // custom css------------------------------------------
+  return (
+    <section>
+      <header>
+        <h3>Create Quiz</h3>
+      </header>
+      {/* ---------------------------------------------------------------------------------- */}
+      <form onSubmit={handelSubmits}>
+        <>
+          {quizArray.map((quizArrayVal, quizArrayIndex) => {
+            return (
+              <div className="container" key={quizArrayIndex}>
+                <div className="row">
+                  <TextField
+                    label="Quiz Name"
+                    id="custom-css-outlined-input"
+                    onChange={(e) => handlechangeName(e, quizArrayIndex)}
+                    value={quizArrayVal.quizName}
+                    autoComplete="none"
+                    required
+                  />
+                  <Button
+                    variant="contained"
+                    sx={{ bgcolor: "#6657CA", height: "50px" }}
+                    onClick={() => handleAddQuestion(quizArrayIndex)}
+                  >
+                    Add Question
+                  </Button>
+                </div>
+                <Box
+                  sx={{
+                    height: "450px",
+                    width: "100%",
+                    backgroundColor: "#fff",
+                    overflowY: "scroll",
+                  }}
+                >
+                  <>
+                    {quizArrayVal.questions.map(
+                      (valQuestion, questionIndex) => (
+                        <div key={questionIndex} className="form-group">
+                          <div>
+                            <label>Question {questionIndex + 1}</label>
+                          </div>
+                          <CssTextFields
+                            type="text "
+                            required
+                            autoComplete="none"
+                            sx={{ height: "40px", marginTop: "10px" }}
+                            onChange={(e) =>
+                              handlechangeQus(e, quizArrayIndex, questionIndex)
+                            }
+                          />
+                          <div>
+                            <Button
+                              variant="contained"
+                              sx={{
+                                bgcolor: "#6657CA",
+                                height: "40px",
+                                marginTop: "50px",
+                              }}
+                              onClick={() =>
+                                handleAddOptions(questionIndex, quizArrayIndex)
+                              }
+                            >
+                              Add Options
+                            </Button>
+                            <div>
+                              {valQuestion.options.map(
+                                (valoptions, optionIndex) => (
+                                  <span key={optionIndex} className="optionBox">
+                                    <input
+                                      type="radio"
+                                      name="radio"
+                                      className="radio"
+                                    />
+                                    <input
+                                      type="text"
+                                      required
+                                      onChange={(e) =>
+                                        handlechangeOptions(
+                                          e,
+                                          quizArrayIndex,
+                                          questionIndex,
+                                          optionIndex
+                                        )
+                                      }
+                                    />
+                                    <i>
+                                      <DeleteForeverIcon
+                                        className="optionbtn-del-icon"
+                                        onClick={() =>
+                                          optionsDelete(
+                                            quizArrayIndex,
+                                            questionIndex,
+                                            optionIndex
+                                          )
+                                        }
+                                      />
+                                    </i>
+                                  </span>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </>
+                </Box>
+              </div>
+            );
+          })}
+
+          <div>
+            <Button
+              variant="contained"
+              sx={{ bgcolor: "#6657CA", marginTop: "10px" }}
+              type="submit"
+            >
+              Submit
+            </Button>
+          </div>
+        </>
+      </form>
+    </section>
+  );
+};
+
+export default StaffQuizForm;
+// ------------------------dsfdfdf------------------
